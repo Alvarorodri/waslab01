@@ -36,11 +36,22 @@ public class WoTServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			Vector<Tweet> tweets = Database.getTweets();
-			printHTMLresult(tweets, request, response);
+			if (request.getHeader("Accept").equals("text/plain")) {
+				printPLAINresult(tweets, request, response);
+			}
+			else printHTMLresult(tweets, request, response);
 		}
 
 		catch (SQLException ex ) {
 			throw new ServletException(ex);
+		}
+	}
+
+	private void printPLAINresult(Vector<Tweet> tweets, HttpServletRequest req, HttpServletResponse res) throws IOException {
+		// TODO Auto-generated method stub
+		PrintWriter out = res.getWriter ( );
+		for (Tweet tweet: tweets) {
+			out.println("tweet #" + tweet.getTwid() + ": " + tweet.getAuthor() + ": " + tweet.getText() + " [" + tweet.getDate() + "]");
 		}
 	}
 
