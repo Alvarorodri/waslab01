@@ -21,6 +21,10 @@ public class SimpleFluentClient {
     	System.out.println(Request.Get(URI).addHeader("Accept", "text/plain").execute().returnContent());
     	
     	/* Insert code for Task #5 here */
+    	System.out.print(Request.Post(URI)
+    		    .bodyForm(Form.form().add("author",  "peilin").add("tweet_text",  "hola colibrí").build()).addHeader("Accept", "text/plain")
+    		    .execute().returnContent());
+    	    
     }
 }
 
