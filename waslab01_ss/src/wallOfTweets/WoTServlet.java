@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,14 +68,20 @@ public class WoTServlet extends HttpServlet {
 		Long idT = null;
 		
 		String id = request.getParameter("id");
+		Cookie[] cookies = request.getCookies();
 		
 		if (id != null) {
-			System.out.println(id);
-			Database.deleteTweet(Long.valueOf(request.getParameter("id")));
+			if (cookies.length != 0) {
+				for (Cookie c: cookies) {
+					if (c.getValue().equals(id))
+						Database.deleteTweet(Long.valueOf(request.getParameter("id")));
+				}
+			}
 		}
 		else {
 			try {
 				idT = Database.insertTweet(author, text);
+				response.addCookie(new Cookie(idT.toString(), idT.toString()));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
