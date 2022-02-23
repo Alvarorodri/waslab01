@@ -14,17 +14,16 @@ public class SimpleFluentClient {
 	public final static void main(String[] args) throws Exception {
     	
     	/* Insert code for Task #4 here */
-		System.out.print(Request.Post(URI)
-	    .bodyForm(Form.form().add("author",  "peilin").add("tweet_text",  "hola colibrí").build()).addHeader("Accept", "text/plain")
-	    .execute().returnContent());
+		String id = Request.Post(URI)
+			    .bodyForm(Form.form().add("author",  "peilin").add("tweet_text",  "hola colibrí").build()).addHeader("Accept", "text/plain")
+			    .execute().returnContent().asString();
+		System.out.println(id);
     	
     	System.out.println(Request.Get(URI).addHeader("Accept", "text/plain").execute().returnContent());
     	
     	/* Insert code for Task #5 here */
-    	System.out.print(Request.Post(URI)
-    		    .bodyForm(Form.form().add("author",  "peilin").add("tweet_text",  "hola colibrí").build()).addHeader("Accept", "text/plain")
-    		    .execute().returnContent());
-    	    
+    	System.out.print(Request.Post(URI).addHeader("Accept", "delete")
+    		    .bodyForm(Form.form().add("id",  id).build()).execute());
     }
 }
 

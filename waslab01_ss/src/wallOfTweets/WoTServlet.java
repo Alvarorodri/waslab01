@@ -69,7 +69,8 @@ public class WoTServlet extends HttpServlet {
 		String id = request.getParameter("id");
 		
 		if (id != null) {
-			Database.deleteTweet(Long.parseLong(id));
+			System.out.println(id);
+			Database.deleteTweet(Long.valueOf(request.getParameter("id")));
 		}
 		else {
 			try {
