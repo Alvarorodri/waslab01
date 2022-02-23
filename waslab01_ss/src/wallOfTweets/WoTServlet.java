@@ -2,6 +2,8 @@ package wallOfTweets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Locale;
@@ -73,7 +75,7 @@ public class WoTServlet extends HttpServlet {
 		if (id != null) {
 			if (cookies.length != 0) {
 				for (Cookie c: cookies) {
-					if (c.getValue().equals(id))
+					if (c.getValue().equals(convertirMD5(id)))
 						Database.deleteTweet(Long.valueOf(request.getParameter("id")));
 				}
 			}
@@ -81,7 +83,7 @@ public class WoTServlet extends HttpServlet {
 		else {
 			try {
 				idT = Database.insertTweet(author, text);
-				response.addCookie(new Cookie(idT.toString(), idT.toString()));
+				response.addCookie(new Cookie(idT.toString(), convertirMD5(idT.toString())));
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -91,6 +93,26 @@ public class WoTServlet extends HttpServlet {
 		if (request.getHeader("Accept").equals("text/plain")) out.println(idT);
 		else response.sendRedirect(request.getContextPath());
 	}
+	
+	
+	private String convertirMD5(String contra) {
+		MessageDigest mdigest = null;
+		try {
+			mdigest = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		byte[] hash = mdigest.digest(contra.getBytes());
+		StringBuffer s = new StringBuffer();
+		
+		for (byte b: hash) {
+			s.append(Integer.toHexString((b & 0xFF) | 0x100).substring(1,3));		
+		}
+		return s.toString();
+	}
+	
 
 	private void printHTMLresult (Vector<Tweet> tweets, HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
